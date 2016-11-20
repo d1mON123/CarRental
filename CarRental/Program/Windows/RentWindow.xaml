@@ -1,0 +1,60 @@
+﻿<Window x:Class="Program.Windows.RentWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Program.Windows"
+        mc:Ignorable="d"
+        Title="RentCarWindow" Height="580" Width="660" Loaded="Window_Loaded" FontSize="14">
+    <Grid>
+        <GroupBox x:Name="ExtraBox" Header="Додаткові послуги" HorizontalAlignment="Left" Margin="20,380,0,0" VerticalAlignment="Top" Height="150" Width="260">
+            <Grid Margin="0,0,-2,-3">
+                <CheckBox x:Name="driverBox" Content="Водій" HorizontalAlignment="Left" Margin="20,20,0,0" VerticalAlignment="Top" />
+                <CheckBox x:Name="childBox" Content="Дитяче крісло" HorizontalAlignment="Left" Margin="20,60,0,0" VerticalAlignment="Top" />
+                <CheckBox x:Name="gpsBox" Content="GPS навігатор" HorizontalAlignment="Left" Margin="20,100,0,0" VerticalAlignment="Top" />
+                <Label x:Name="driverLabel" HorizontalAlignment="Left" Margin="140,14,0,0" VerticalAlignment="Top" Height="26" Width="90"/>
+                <Label x:Name="childLabel" HorizontalAlignment="Left" Margin="140,54,0,0" VerticalAlignment="Top" Height="26" Width="90"/>
+                <Label x:Name="gpsLabel" HorizontalAlignment="Left" Margin="140,95,0,0" VerticalAlignment="Top" Height="26" Width="90"/>
+            </Grid>
+        </GroupBox>
+        <GroupBox x:Name="DataBox" Header="Персональні данні" HorizontalAlignment="Left" Margin="20,100,0,0" VerticalAlignment="Top" Height="160" Width="610">
+            <Grid Margin="0,0,-2,-3">
+                <Label x:Name="SNameLabel" Content="Прізвище:" HorizontalAlignment="Left" Margin="20,20,0,0" VerticalAlignment="Top" Height="30" Width="79"/>
+                <Label x:Name="FNameLabel" Content="Ім'я:" HorizontalAlignment="Left" Margin="20,60,0,0" VerticalAlignment="Top" Height="26" Width="79"/>
+                <Label x:Name="TNameLabel" Content="По-батькові:"  HorizontalAlignment="Left" Margin="20,100,0,0" VerticalAlignment="Top" Height="26" Width="100"/>
+                <TextBox x:Name="SNameBox" HorizontalAlignment="Left" Height="23" Margin="130,23,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+                <TextBox x:Name="FNameBox" HorizontalAlignment="Left" Height="23" Margin="130,63,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+                <TextBox x:Name="TNameBox" HorizontalAlignment="Left" Height="23" Margin="130,103,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+                <Label x:Name="IDNumberLabel" Content="Ідентифікаційний код:" HorizontalAlignment="Left" Margin="280,20,0,0" VerticalAlignment="Top" Height="30" Width="161"/>
+                <Label x:Name="PassportLabel" Content="Паспорт:" HorizontalAlignment="Left" Margin="280,60,0,0" VerticalAlignment="Top" Height="30" Width="79"/>
+                <Label x:Name="LicenseLabel" Content="Водійське посвідчення:" HorizontalAlignment="Left" Margin="280,100,0,0" VerticalAlignment="Top" Height="30" Width="161"/>
+                <TextBox x:Name="IDBox" HorizontalAlignment="Left" Height="23" Margin="450,23,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+                <TextBox x:Name="PassportBox" HorizontalAlignment="Left" Height="23" Margin="450,63,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+                <TextBox x:Name="LicenseBox" HorizontalAlignment="Left" Height="23" Margin="450,103,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+            </Grid>
+        </GroupBox>
+        <GroupBox x:Name="DateBox" Header="Час прокату" HorizontalAlignment="Left" Margin="20,260,0,0" VerticalAlignment="Top" Height="125" Width="610">
+            <Grid Margin="0,0,-2,-3">
+                <Label x:Name="SNameLabel1" Content="Час видачі:" HorizontalAlignment="Left" Margin="20,20,0,0" VerticalAlignment="Top" Height="30" Width="79"/>
+                <Label x:Name="IDNumberLabel1" Content="Час повернення:" HorizontalAlignment="Left" Margin="280,20,0,0" VerticalAlignment="Top" Height="30" Width="136"/>
+                <DatePicker x:Name="TimeF" HorizontalAlignment="Left" Margin="125,23,0,0" VerticalAlignment="Top" Width="120" SelectedDateChanged="TimeF_SelectedDateChanged"/>
+                <DatePicker x:Name="TimeL" HorizontalAlignment="Left" Margin="440,23,0,0" VerticalAlignment="Top" Width="120" SelectedDateChanged="TimeL_SelectedDateChanged" />
+                <ComboBox x:Name="TimeFBox" HorizontalAlignment="Left" Margin="125,65,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="TimeFBox_SelectionChanged" />
+                <ComboBox x:Name="TimeLBox" HorizontalAlignment="Left" Margin="440,65,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="TimeLBox_SelectionChanged"/>
+            </Grid>
+        </GroupBox>
+        <GroupBox x:Name="DataBox_Copy" Header="Обраний авомобіль" HorizontalAlignment="Left" Margin="20,10,0,0" VerticalAlignment="Top" Height="93" Width="610">
+            <Grid Margin="0,0,-2,-3">
+                <Label x:Name="CompanyLabel" Content="Марка:" HorizontalAlignment="Left" Margin="20,20,0,0" VerticalAlignment="Top" Height="30" Width="79"/>
+                <TextBox x:Name="CompanyBox" HorizontalAlignment="Left" IsReadOnly="True" Height="23" Margin="130,23,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+                <Label x:Name="ModelLabel" Content="Модель:" HorizontalAlignment="Left" Margin="280,20,0,0" VerticalAlignment="Top" Height="30" Width="79"/>
+                <TextBox x:Name="ModelBox" HorizontalAlignment="Left" IsReadOnly="True" Height="23" Margin="450,23,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+
+            </Grid>
+        </GroupBox>
+        <Label x:Name="Pricelabel" Content="Вартість прокату:" HorizontalAlignment="Left" Margin="320,420,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="PriceBox" HorizontalAlignment="Left" Height="23" Margin="470,426,0,0" TextWrapping="Wrap" IsReadOnly="True" VerticalAlignment="Top" Width="120"/>
+        <Button x:Name="RentButton" Content="Забронювати" HorizontalAlignment="Left" Margin="487,469,0,0" VerticalAlignment="Top" Width="103" Height="28" Click="RentButton_Click" IsEnabled="False"/>
+        <Button x:Name="PriceButton" Content="Розрахувати" HorizontalAlignment="Left" Margin="320,469,0,0" VerticalAlignment="Top" Width="103" Height="28" Click="PriceButton_Click"/>
+    </Grid>
+</Window>

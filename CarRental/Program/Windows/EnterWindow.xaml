@@ -1,0 +1,19 @@
+﻿<Window x:Class="Program.EnterWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Program"
+        mc:Ignorable="d"
+        Title="Вхід" Height="250" Width="300" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize">
+    <Grid>
+        <Label x:Name="Serverlabel" Content="Сервер: " HorizontalAlignment="Left" Margin="30,30,0,0" VerticalAlignment="Top" FontSize="14"/>
+        <Label x:Name="Userlabel" Content="Логін: " HorizontalAlignment="Left" Margin="30,77,0,0" VerticalAlignment="Top" FontSize="14"/>
+        <Label x:Name="Passwordlabel" Content="Пароль: " HorizontalAlignment="Left" Margin="30,127,0,0" VerticalAlignment="Top" FontSize="14"/>
+        <TextBox x:Name="ServerTextBox" HorizontalAlignment="Left" Height="23" Margin="130,33,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" FontSize="14"/>
+        <TextBox x:Name="UserTextBox" HorizontalAlignment="Left" Height="23" Margin="130,80,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" FontSize="14"/>
+        <PasswordBox x:Name="passwordBox" HorizontalAlignment="Left" Margin="130,130,0,0" VerticalAlignment="Top" Width="120" Height="23" FontSize="14"/>
+        <Button x:Name="connectButton" Content="Підключитись" HorizontalAlignment="Left" Margin="90,175,0,0" VerticalAlignment="Top" Width="110" FontSize="14" Click="connectButton_Click"/>
+
+    </Grid>
+</Window>

@@ -1,0 +1,46 @@
+﻿<Window x:Class="Program.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Program"
+        mc:Ignorable="d"
+        Title="Оренда автомобілів" Height="400" Width="600" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen">
+    <Grid>
+        <DockPanel LastChildFill="True">
+            <Menu DockPanel.Dock="Top" Background="White" FontSize="14">
+                <MenuItem Header="_Меню">
+                    <MenuItem Header="_Вихід"/>
+                </MenuItem>
+                <MenuItem Header="_Редагування">
+                    <MenuItem Header="_Додати" Click="Add_Click"/>
+                    <MenuItem Header="_Редагувати" Click="Edit_Click"/>
+                    <MenuItem Header="_Видалити" Click="Del_Click"/>
+                    <MenuItem Header="_Орендувати" Click="Rent_Click"/>
+                </MenuItem>
+                <MenuItem Header="Оренда">
+                    <MenuItem Header="_Заплановані" Click="RentedCar_Click"/>
+                    <MenuItem Header="_Активні" Click="ActiveRented_Click"/>
+                    <MenuItem Header="_Завершені" Click="FinishedRented_Click"/>
+                    <MenuItem Header="_Архів"/>
+                    <MenuItem Header="_Звіт"/>
+                </MenuItem>
+                <MenuItem Header="_Довідники">
+                    <MenuItem Header="_Марка" Click="Company_Click"/>
+                    <MenuItem Header="_Тип кузова" Click="Type_Click"/>
+                    <MenuItem Header="_Тип палива" Click="Fuel_Click"/>
+                    <MenuItem Header="_Коробка передач" Click="Transmission_Click"/>
+                    <MenuItem Header="_Привід" Click="Drive_Click"/>
+                    <MenuItem Header="_Клас" Click="Category_Click"/>
+                </MenuItem>
+                <MenuItem Header="Налаштування" Click="Settings_Click"></MenuItem>
+            </Menu>
+            <StatusBar x:Name="statusBar" DockPanel.Dock="Bottom">
+                <StatusBarItem Height="24">
+                    <TextBlock Name="lblTime" Width="125"/>
+                </StatusBarItem>
+            </StatusBar>
+            <DataGrid x:Name="dataGrid" IsReadOnly="True" FontSize="14" MouseDoubleClick="CarInfo_Click"></DataGrid>
+        </DockPanel>
+    </Grid>
+</Window>
