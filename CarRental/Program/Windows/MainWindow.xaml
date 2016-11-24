@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Program"
         mc:Ignorable="d"
-        Title="Оренда автомобілів" Height="400" Width="600" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen">
+        Title="Оренда автомобілів" Height="400" Width="600" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen" WindowState="Maximized" Closing="Window_Closing">
     <Grid>
         <DockPanel LastChildFill="True">
             <Menu DockPanel.Dock="Top" Background="White" FontSize="14">
@@ -22,8 +22,13 @@
                     <MenuItem Header="_Заплановані" Click="RentedCar_Click"/>
                     <MenuItem Header="_Активні" Click="ActiveRented_Click"/>
                     <MenuItem Header="_Завершені" Click="FinishedRented_Click"/>
-                    <MenuItem Header="_Архів"/>
-                    <MenuItem Header="_Звіт"/>
+                    <MenuItem Header="_Архів" Click="Archive_Click"/>
+                    <MenuItem Header="_Звіт" Click="Report_Click"/>
+                </MenuItem>
+                <MenuItem Header="Ремонт">
+                    <MenuItem Header="_Діючі" Click="Repair_Click"/>
+                    <MenuItem Header="_Архів" Click="RentedCar_Click"/>
+                    <MenuItem Header="_Звіт" Click="ActiveRented_Click"/>
                 </MenuItem>
                 <MenuItem Header="_Довідники">
                     <MenuItem Header="_Марка" Click="Company_Click"/>

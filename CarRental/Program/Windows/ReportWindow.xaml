@@ -1,16 +1,26 @@
-﻿<Window x:Class="Program.Windows.ReportWindow"
+﻿<Window x:Class="Program.ReportWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Program.Windows"
         mc:Ignorable="d"
-        Title="ReportWindow" Height="300" Width="300">
+        Title="Звіт по оренді" Height="338.346" Width="515.414" ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen">
     <Grid>
-        <Label x:Name="mileageLabel" Content="Пробіг:" HorizontalAlignment="Left" Margin="34,103,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="mileageBox" HorizontalAlignment="Left" Height="23" Margin="94,109,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <Button x:Name="acceptButton" Content="Прийняти" HorizontalAlignment="Left" Margin="84,175,0,0" VerticalAlignment="Top" Width="75" Click="acceptButton_Click"/>
-        <Button x:Name="cancelButton" Content="Скасувати" HorizontalAlignment="Left" Margin="190,175,0,0" VerticalAlignment="Top" Width="75"/>
+        <Label x:Name="mileageLabel" Content="Пробіг:" HorizontalAlignment="Left" Margin="48,17,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="mileageBox" HorizontalAlignment="Left" Height="23" Margin="108,23,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+        <Button x:Name="acceptButton" Content="Прийняти" HorizontalAlignment="Left" Margin="163,266,0,0" VerticalAlignment="Top" Width="75" Click="acceptButton_Click"/>
+        <Button x:Name="cancelButton" Content="Скасувати" HorizontalAlignment="Left" Margin="269,266,0,0" VerticalAlignment="Top" Width="75" Click="cancelButton_Click" RenderTransformOrigin="2.48,3.377"/>
+        <GroupBox x:Name="DataBox_Copy5" Header="Ремонт" HorizontalAlignment="Left" Margin="48,69,0,0" VerticalAlignment="Top" Height="165" Width="360">
+            <Grid Margin="0,0,-2,-3">
+                <Label x:Name="reasonLabel" Content="Причина:" HorizontalAlignment="Left" Margin="19,57,0,0" VerticalAlignment="Top" FontSize="14"/>
+                <Label x:Name="priceLabel" Content="Вартість відшкодувань:" HorizontalAlignment="Left" Margin="19,97,0,0" VerticalAlignment="Top" FontSize="14"/>
+                <CheckBox x:Name="needRepairBox" Content="Потребує" HorizontalAlignment="Left" Margin="33,20,0,0" VerticalAlignment="Top"/>
+                <CheckBox x:Name="dontNeedRepairBox" Content="Не потребує" HorizontalAlignment="Left" Margin="199,20,0,0" VerticalAlignment="Top"/>
+                <TextBox x:Name="reasonBox" HorizontalAlignment="Left" Height="23" Margin="199,63,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+                <TextBox x:Name="priceBox" HorizontalAlignment="Left" Height="23" Margin="199,103,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+            </Grid>
+        </GroupBox>
 
     </Grid>
 </Window>

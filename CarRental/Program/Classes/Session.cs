@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 using System.Data;
 using System.Windows;
@@ -18,7 +15,7 @@ namespace Program
         private string Password;
         private MySqlConnection serverconn;
         private const string ShortCarQuery = "SELECT car.id, Company, Model, Year, Category, Type, Seats, Price, Pledge FROM car_db1.car, car_db1.company, car_db1.type, " +
-                                                "car_db1.category WHERE car.Company_ID = company.ID AND car.Type_ID = type.ID AND car.Category_ID = category.ID";
+                                                "car_db1.category WHERE car.Company_ID = company.ID AND car.Type_ID = type.ID AND car.Category_ID = category.ID AND Repair = 0 AND Availability = 1";
         private const string LongCarQuery = "SELECT car.id, Company, Model, Year, Category, Type, Fuel, Transmission, Drive, Engine, DischargeS, DischargeO, DischargeM, Power, MaxSpeed, Seats, " +
                                                 "Doors, Acceleration, Price, Pledge FROM car_db1.car, car_db1.company, car_db1.category, car_db1.type, car_db1.fuel, " +
                                                 "car_db1.transmission, car_db1.drive WHERE car.Company_ID = company.ID AND car.Category_ID = category.ID AND car.Type_ID = type.ID " +
@@ -26,8 +23,12 @@ namespace Program
         private const string RentedCarQuery = "SELECT rented_car.Id, Company, Model, Year, SName, FName, TName, Passport, ID_Number, License, FDay, LDay, TotalHours, rented_car.Price " +
                                                 "FROM car_db1.rented_car, car_db1.car, car_db1.company WHERE car.ID = rented_car.Car_ID AND car.Company_ID = company.ID AND Status = ";
         private const string CatalogQuery = "SELECT * FROM car_db1.";
-
-
+        private const string ArchiveQuery = "SELECT archive.ID, Company, Model, SName, FName, TName, FDay, LDay, TotalHours, archive.Price FROM car_db1.archive, car_db1.car, car_db1.company WHERE car.ID = archive.Car_ID AND car.Company_ID = company.ID";
+        private const string ReportQuery = "SELECT report.ID, Company, Model, Mileage, TotalHours, Income FROM car_db1.report, car_db1.car, car_db1.company WHERE car.ID = report.Car_ID AND car.Company_ID = company.ID";
+        private const string RepairQuery = "SELECT repair.ID, Company, Model, Reason, repair.Price FROM car_db1.repair, car_db1.car, car_db1.company WHERE car.ID = repair.Car_ID AND car.Company_ID = company.ID";
+        private const string RepairedQuery = "SELECT repairarchive.ID, Company, Model, Reason, repairarchive.Price FROM car_db1.repairarchive, car_db1.car, car_db1.company WHERE car.ID = repairarchive.Car_ID AND car.Company_ID = company.ID";
+        private const string RepairArchiveQuery = "SELECT repairarchive.ID, Company, Model, Reason, repairarchive.Price FROM car_db1.repairarchive, car_db1.car, car_db1.company WHERE car.ID = repairarchive.Car_ID AND car.Company_ID = company.ID";
+        private const string RepairReporQuery = "SELECT repair_report.ID, Company, Model, Count, Loss FROM car_db1.repair_report, car_db1.car, car_db1.company WHERE car.ID = repair_report.Car_ID AND car.Company_ID = company.ID";
         public Session(string Server, string User, string Password)
         {
             this.Server = Server;
@@ -82,8 +83,8 @@ namespace Program
                 "CREATE TABLE IF NOT EXISTS `car_db1`.`drive` (`ID` INT NOT NULL AUTO_INCREMENT, `Drive` VARCHAR(45) NOT NULL, UNIQUE INDEX `Drive_UNIQUE` (`Drive` ASC), PRIMARY KEY(`ID`));" +
                 "CREATE TABLE IF NOT EXISTS `car_db1`.`car` (`ID` INT NOT NULL AUTO_INCREMENT, `Company_ID` INT NOT NULL, `Model` VARCHAR(45) NOT NULL, `Year` YEAR NOT NULL, `Category_ID` INT NOT NULL, " +
                 "`Type_ID` INT NOT NULL, `Fuel_ID` INT NOT NULL, `Transmission_ID` INT NOT NULL, `Drive_ID` INT NOT NULL, `Engine` INT NOT NULL, `DischargeS` DOUBLE NOT NULL, `DischargeO` DOUBLE NOT NULL, `DischargeM` DOUBLE NOT NULL, " +
-                "`Power` INT NOT NULL, `MaxSpeed` INT NOT NULL, `Seats` INT NOT NULL, `Doors` INT NOT NULL, `Acceleration` DOUBLE NOT NULL, `Price` INT NOT NULL, `Pledge` INT NOT NULL, " +
-                "PRIMARY KEY (`ID`), INDEX `company_idx` (`Company_ID` ASC), INDEX `category_idx` (`Category_ID` ASC), INDEX `type_idx` (`Type_ID` ASC), INDEX `fuel_idx` (`Fuel_ID` ASC), " +
+                "`Power` INT NOT NULL, `MaxSpeed` INT NOT NULL, `Seats` INT NOT NULL, `Doors` INT NOT NULL, `Acceleration` DOUBLE NOT NULL, `Price` INT NOT NULL, `Pledge` INT NOT NULL, `Repair` TINYINT NOT NULL DEFAULT 0, " +
+                "`Availability` TINYINT NOT NULL DEFAULT 1, PRIMARY KEY (`ID`), INDEX `company_idx` (`Company_ID` ASC), INDEX `category_idx` (`Category_ID` ASC), INDEX `type_idx` (`Type_ID` ASC), INDEX `fuel_idx` (`Fuel_ID` ASC), " +
                 "INDEX `transmission_idx` (`Transmission_ID` ASC), INDEX `drive_idx` (`Drive_ID` ASC), CONSTRAINT `company` FOREIGN KEY (`Company_ID`) REFERENCES `car_db1`.`company` (`ID`) " +
                 "ON DELETE NO ACTION ON UPDATE NO ACTION, CONSTRAINT `category` FOREIGN KEY (`Category_ID`) REFERENCES `car_db1`.`category` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION, " +
                 "CONSTRAINT `type` FOREIGN KEY (`Type_ID`) REFERENCES `car_db1`.`type` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION, CONSTRAINT `fuel` FOREIGN KEY (`Fuel_ID`) REFERENCES `car_db1`.`fuel` (`ID`) " +
@@ -94,7 +95,11 @@ namespace Program
                 "REFERENCES `car_db1`.`car` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION); CREATE TABLE IF NOT EXISTS `car_db1`.`report` (`ID` INT NOT NULL AUTO_INCREMENT, `Car_ID` INT NOT NULL, `Mileage` DOUBLE NOT NULL, " +
                 "`TotalHours` INT NOT NULL, `Income` INT NOT NULL, PRIMARY KEY (`ID`), INDEX `carid_idx` (`Car_ID` ASC), CONSTRAINT `carid` FOREIGN KEY (`Car_ID`) REFERENCES `car_db1`.`car` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION); " +
                 "CREATE TABLE IF NOT EXISTS `car_db1`.`archive` (`ID` INT NOT NULL AUTO_INCREMENT, `Car_ID` INT NOT NULL, `SName` VARCHAR(45) NOT NULL, `FName` VARCHAR(45) NOT NULL, `TName` VARCHAR(45) NOT NULL, `FDay` DATETIME NOT NULL, `LDay` DATETIME NOT NULL, " +
-                "`TotalHours` INT NOT NULL, `Price` INT NOT NULL, PRIMARY KEY (`ID`), INDEX `carid_idx` (`Car_ID` ASC), CONSTRAINT `cid` FOREIGN KEY (`Car_ID`) REFERENCES `car_db1`.`car` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION); ";
+                "`TotalHours` INT NOT NULL, `Price` INT NOT NULL, PRIMARY KEY (`ID`), INDEX `carid_idx` (`Car_ID` ASC), CONSTRAINT `cid` FOREIGN KEY (`Car_ID`) REFERENCES `car_db1`.`car` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION); "+
+                "CREATE TABLE IF NOT EXISTS `car_db1`.`repair` (`ID` INT NOT NULL AUTO_INCREMENT, `Car_ID` INT NOT NULL, `Reason` VARCHAR(200) NOT NULL, `Price` DOUBLE NOT NULL, PRIMARY KEY (`ID`), INDEX `carid_idx` (`Car_ID` ASC), CONSTRAINT `carid1` "+
+                "FOREIGN KEY (`Car_ID`) REFERENCES `car_db1`.`car` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION); CREATE TABLE IF NOT EXISTS `car_db1`.`repairarchive` (`ID` INT NOT NULL AUTO_INCREMENT, `Car_ID` INT NOT NULL, `Reason` VARCHAR(200) NOT NULL, " +
+                "`Loss` INT NOT NULL, PRIMARY KEY (`ID`), INDEX `carid2_idx` (`Car_ID` ASC), CONSTRAINT `carid2` FOREIGN KEY (`Car_ID`) REFERENCES `car_db1`.`car` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION); CREATE TABLE IF NOT EXISTS `car_db1`.`repair_report` ( "+
+                "`ID` INT NOT NULL AUTO_INCREMENT, `Car_ID` INT NOT NULL, `Count` INT NOT NULL DEFAULT 0, `Loss` INT NOT NULL, PRIMARY KEY (`ID`), UNIQUE INDEX `Car_ID_UNIQUE` (`Car_ID` ASC)); ";
             MySqlCommand cmd = new MySqlCommand(query, serverconn);
 
             try
@@ -166,6 +171,10 @@ namespace Program
             DataTable dbtable = new DataTable();
             if (table == "car") query = ShortCarQuery;
             else if (table == "rented_car") query = RentedCarQuery;
+            else if (table == "archive") query = ArchiveQuery;
+            else if (table == "report") query = ReportQuery;
+            else if (table == "repair") query = RepairQuery;
+            else if (table == "repairarchive") query = RepairedQuery;
             else query = CatalogQuery + table;
             MySqlCommand cmd = new MySqlCommand(query, serverconn);
             MySqlDataAdapter adapter = new MySqlDataAdapter(query, serverconn);
@@ -355,7 +364,9 @@ namespace Program
 
         public void CarRented(DateTime dt)
         {
-            string result = "";
+            string title = "Прокат";
+            string text = "";
+
             List<RentedCar> activeList = new List<RentedCar>();
             List<RentedCar> finishedList = new List<RentedCar>();
             RentedCar rc = new RentedCar();
@@ -366,20 +377,67 @@ namespace Program
             while (reader.Read())
             {
                 rc.ID = int.Parse(reader["ID"].ToString());
+                rc.Fname = reader["FName"].ToString();
+                rc.Sname = reader["SName"].ToString();
+                rc.Tname = reader["TName"].ToString();
                 rc.FDate = Convert.ToDateTime(reader["FDay"].ToString());
                 rc.LDate = Convert.ToDateTime(reader["Lday"].ToString());
-                if (rc.LDate.ToString() == dt.ToString())
+                if (rc.LDate <= dt)
                 {
-                    result = String.Format("Прокат закінчився - {0}", rc.ID.ToString());
+                    text = String.Format("Прокат закінчився ({0} {1} {2})", rc.Sname, rc.Fname, rc.Tname);
                     finishedList.Add(rc);
                 }
-                else if (rc.FDate.ToString() == dt.ToString())
+                else if (rc.FDate <= dt)
                 {
-                    result = String.Format("Прокат почався - {0}", rc.ID.ToString());
+                    text = String.Format("Прокат почався ({0} {1} {2})", rc.Sname, rc.Fname, rc.Tname);
                     activeList.Add(rc);
                 }
-                nicon.ShowBalloonTip(5000, result, result, System.Windows.Forms.ToolTipIcon.Info);
+                nicon.ShowBalloonTip(5000, title, text, System.Windows.Forms.ToolTipIcon.Info);
                 
+            }
+            serverconn.Close();
+            ChangeStatus(activeList, 1);
+            ChangeStatus(finishedList, 2);
+        }
+
+        public void CheckStatus(DateTime dt)
+        {
+            string title = "Статус";
+            string text = "";
+            List<RentedCar> activeList = new List<RentedCar>();
+            List<RentedCar> finishedList = new List<RentedCar>();
+            RentedCar rc = new RentedCar();
+            int activeCount = 0;
+            int finishedCount = 0;
+            String query = String.Format("SELECT * FROM {0}.rented_car", DataBase);
+            MySqlCommand cmd = new MySqlCommand(query, serverconn);
+            serverconn.Open();
+            MySqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                rc.ID = int.Parse(reader["ID"].ToString());
+                rc.FDate = Convert.ToDateTime(reader["FDay"].ToString());
+                rc.LDate = Convert.ToDateTime(reader["Lday"].ToString());
+                if (rc.LDate <= dt)
+                {
+                    finishedCount++;
+                    finishedList.Add(rc);
+                }
+                else if (rc.FDate <= dt)
+                {
+                    activeCount++;
+                    activeList.Add(rc);
+                }
+                if (activeCount > 0)
+                {
+                    text = "К-ть активних оренд : " + activeCount.ToString();
+                    nicon.ShowBalloonTip(5000, title, text, System.Windows.Forms.ToolTipIcon.Info);
+                }
+                if (finishedCount > 0)
+                {
+                    text = "К-ть завершених оренд : " + finishedCount.ToString();
+                    nicon.ShowBalloonTip(5000, title, text, System.Windows.Forms.ToolTipIcon.Info);
+                }
             }
             serverconn.Close();
             ChangeStatus(activeList, 1);
@@ -491,6 +549,60 @@ namespace Program
             rc.Price = int.Parse(reader["Price"].ToString());
             serverconn.Close();
             return rc;
+        }
+
+        public void Repair(RepairCar rpc)
+        {
+            String Query = String.Format("INSERT INTO {0}.repair (Car_ID, Reason, Price) VALUES ({1},'{2}',{3}) ", DataBase, rpc.Carid, rpc.Reason, rpc.Price.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture));
+            MySqlCommand Cmd = new MySqlCommand(Query, serverconn);
+            try
+            {
+                serverconn.Open();
+                Cmd.ExecuteNonQuery();
+            }
+            catch (MySqlException ex)
+            {
+                switch (ex.Number)
+                {
+                    case 1062:
+                        MessageBox.Show("Повтор");
+                        break;
+                }
+            }
+            finally
+            {
+                serverconn.Close();
+            }
+        }
+
+        public void UnRepair(int ID)
+        {
+            String firstQuery = String.Format("INSERT INTO {0}.repairarchive (Car_ID, Reason, Loss) SELECT Car_ID, Reason, Price FROM {0}.repair WHERE ID = {1}  ", DataBase, ID);
+            MySqlCommand firstCmd = new MySqlCommand(firstQuery, serverconn);
+            String secondQuery = String.Format("INSERT INTO {0}.repair_report (Car_ID, Loss) SELECT Car_ID, Price FROM {0}.repair WHERE ID = {1} ON DUPLICATE KEY UPDATE Count = Count + 1, Loss = Loss + repair.Price ", DataBase, ID);
+            MySqlCommand secondCmd = new MySqlCommand(secondQuery, serverconn);
+            String thirdQuery = String.Format("DELETE FROM {0}.repair WHERE ID = {1}", DataBase, ID);
+            MySqlCommand thirdCmd = new MySqlCommand(thirdQuery, serverconn);
+            try
+            {
+                serverconn.Open();
+                firstCmd.ExecuteNonQuery();
+                secondCmd.ExecuteNonQuery();
+                thirdCmd.ExecuteNonQuery();
+            }
+            catch (MySqlException ex)
+            {
+                switch (ex.Number)
+                {
+                    case 1062:
+                        MessageBox.Show("Повтор");
+                        break;
+                }
+            }
+            finally
+            {
+                serverconn.Close();
+            }
         }
     }
 }

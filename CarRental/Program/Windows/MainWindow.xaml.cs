@@ -24,6 +24,7 @@ namespace Program
         Windows.CatalogWindow ctw;
         Windows.RentWindow rcw;
         Windows.RentedCarWindow rdcw;
+        RepairCarWindow rpc;
         public MainWindow(Session s)
         {
             InitializeComponent();
@@ -48,9 +49,11 @@ namespace Program
         {
             UpdateTable();
             DispatcherTimer dispatcherTimer = new DispatcherTimer();
-            //dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
+            dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
             dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
             dispatcherTimer.Start();
+            DateTime dt = DateTime.Now;
+            s.CheckStatus(dt);
         }
 
         private void dispatcherTimer_Tick(object sender, EventArgs e)
@@ -177,10 +180,37 @@ namespace Program
             rdcw.ShowDialog();
         }
 
+        private void Archive_Click(object sender, RoutedEventArgs e)
+        {
+            rdcw = new Windows.RentedCarWindow(s, 3);
+            rdcw.ShowDialog();
+        }
+
+        private void Report_Click(object sender, RoutedEventArgs e)
+        {
+            rdcw = new Windows.RentedCarWindow(s, 4);
+            rdcw.ShowDialog();
+        }
+
         private void Settings_Click(object sender, RoutedEventArgs e)
         {
             new Windows.SettingsWindow().ShowDialog();
             UpdateTable();
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (MessageBox.Show("Ви дійсно  бажаєте вийти?", "Вихід", MessageBoxButton.OKCancel, MessageBoxImage.Information) == MessageBoxResult.Cancel)
+            {
+                e.Cancel = true;
+            }
+        }
+
+        private void Repair_Click(object sender, RoutedEventArgs e)
+        {
+            rpc = new RepairCarWindow(s, 0);
+            rpc.ShowDialog();
+
         }
     }
 }

@@ -61,6 +61,7 @@
     <Compile Include="Classes\Car.cs" />
     <Compile Include="Classes\Catalog.cs" />
     <Compile Include="Classes\DetCarInfo.cs" />
+    <Compile Include="Classes\RepairCar.cs" />
     <Compile Include="Windows\CatalogWindow.xaml.cs">
       <DependentUpon>CatalogWindow.xaml</DependentUpon>
     </Compile>
@@ -80,6 +81,9 @@
     </Compile>
     <Compile Include="Windows\RentWindow.xaml.cs">
       <DependentUpon>RentWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\RepairCarWindow.xaml.cs">
+      <DependentUpon>RepairCarWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\ReportWindow.xaml.cs">
       <DependentUpon>ReportWindow.xaml</DependentUpon>
@@ -120,6 +124,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\RentWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\RepairCarWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
