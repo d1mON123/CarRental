@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
 
-namespace Program.Windows
+namespace Program
 {
     public partial class RentWindow : Window
     {
@@ -99,13 +99,13 @@ namespace Program.Windows
                 else
                 {
                     span = dt1.Subtract(dt);
+                    int totalPrize = int.Parse(span.TotalHours.ToString()) * c.Price;
+                    if (driverBox.IsChecked == true) totalPrize += int.Parse(span.TotalHours.ToString()) * Properties.Settings.Default.Driver;
+                    if (childBox.IsChecked == true) totalPrize += int.Parse(span.TotalHours.ToString()) * Properties.Settings.Default.Child;
+                    if (gpsBox.IsChecked == true) totalPrize += int.Parse(span.TotalHours.ToString()) * Properties.Settings.Default.GPS;
+                    PriceBox.Text = totalPrize.ToString();
+                    RentButton.IsEnabled = true;
                 }
-                int totalPrize = int.Parse(span.TotalHours.ToString()) * c.Price;
-                if (driverBox.IsChecked == true) totalPrize += int.Parse(span.TotalHours.ToString()) * Properties.Settings.Default.Driver;
-                if (childBox.IsChecked == true) totalPrize += int.Parse(span.TotalHours.ToString()) * Properties.Settings.Default.Child;
-                if (gpsBox.IsChecked == true) totalPrize += int.Parse(span.TotalHours.ToString()) * Properties.Settings.Default.GPS;
-                PriceBox.Text = totalPrize.ToString();
-                RentButton.IsEnabled = true;
             }
         }
 
@@ -122,6 +122,12 @@ namespace Program.Windows
         private void TimeLBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             PriceChange();
+        }
+
+        private void driverBox_Click(object sender, RoutedEventArgs e)
+        {
+            PriceButton.IsEnabled = true;
+            RentButton.IsEnabled = false;
         }
     }
 }

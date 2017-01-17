@@ -3,9 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Program.Windows"
+        xmlns:local="clr-namespace:Program"
         mc:Ignorable="d"
-        Title="Звіт по оренді" Height="338.346" Width="515.414" ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen">
+        Title="Звіт по оренді" Height="338.346" Width="515.414" ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen" Icon="/CarRental;component/Resources/Graphicloads-Colorful-Long-Shadow-Car.ico">
     <Grid>
         <Label x:Name="mileageLabel" Content="Пробіг:" HorizontalAlignment="Left" Margin="48,17,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="mileageBox" HorizontalAlignment="Left" Height="23" Margin="108,23,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>

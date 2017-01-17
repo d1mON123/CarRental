@@ -27,15 +27,15 @@ namespace Program
         private const string ReportQuery = "SELECT report.ID, Company, Model, Mileage, TotalHours, Income FROM car_db1.report, car_db1.car, car_db1.company WHERE car.ID = report.Car_ID AND car.Company_ID = company.ID";
         private const string RepairQuery = "SELECT repair.ID, Company, Model, Reason, repair.Price FROM car_db1.repair, car_db1.car, car_db1.company WHERE car.ID = repair.Car_ID AND car.Company_ID = company.ID";
         private const string RepairedQuery = "SELECT repairarchive.ID, Company, Model, Reason, repairarchive.Price FROM car_db1.repairarchive, car_db1.car, car_db1.company WHERE car.ID = repairarchive.Car_ID AND car.Company_ID = company.ID";
-        private const string RepairArchiveQuery = "SELECT repairarchive.ID, Company, Model, Reason, repairarchive.Price FROM car_db1.repairarchive, car_db1.car, car_db1.company WHERE car.ID = repairarchive.Car_ID AND car.Company_ID = company.ID";
-        private const string RepairReporQuery = "SELECT repair_report.ID, Company, Model, Count, Loss FROM car_db1.repair_report, car_db1.car, car_db1.company WHERE car.ID = repair_report.Car_ID AND car.Company_ID = company.ID";
+        private const string RepairArchiveQuery = "SELECT repairarchive.ID, Company, Model, Reason, Loss FROM car_db1.repairarchive, car_db1.car, car_db1.company WHERE car.ID = repairarchive.Car_ID AND car.Company_ID = company.ID";
+        private const string RepairReportQuery = "SELECT repair_report.ID, Company, Model, Count, Loss FROM car_db1.repair_report, car_db1.car, car_db1.company WHERE car.ID = repair_report.Car_ID AND car.Company_ID = company.ID";
         public Session(string Server, string User, string Password)
         {
             this.Server = Server;
             this.User = User;
             this.Password = Password;
             nicon = new System.Windows.Forms.NotifyIcon();
-            nicon.Icon = Properties.Resources.icon;
+            nicon.Icon = Properties.Resources.car;
             nicon.Visible = true;
         }
 
@@ -95,10 +95,10 @@ namespace Program
                 "REFERENCES `car_db1`.`car` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION); CREATE TABLE IF NOT EXISTS `car_db1`.`report` (`ID` INT NOT NULL AUTO_INCREMENT, `Car_ID` INT NOT NULL, `Mileage` DOUBLE NOT NULL, " +
                 "`TotalHours` INT NOT NULL, `Income` INT NOT NULL, PRIMARY KEY (`ID`), INDEX `carid_idx` (`Car_ID` ASC), CONSTRAINT `carid` FOREIGN KEY (`Car_ID`) REFERENCES `car_db1`.`car` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION); " +
                 "CREATE TABLE IF NOT EXISTS `car_db1`.`archive` (`ID` INT NOT NULL AUTO_INCREMENT, `Car_ID` INT NOT NULL, `SName` VARCHAR(45) NOT NULL, `FName` VARCHAR(45) NOT NULL, `TName` VARCHAR(45) NOT NULL, `FDay` DATETIME NOT NULL, `LDay` DATETIME NOT NULL, " +
-                "`TotalHours` INT NOT NULL, `Price` INT NOT NULL, PRIMARY KEY (`ID`), INDEX `carid_idx` (`Car_ID` ASC), CONSTRAINT `cid` FOREIGN KEY (`Car_ID`) REFERENCES `car_db1`.`car` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION); "+
-                "CREATE TABLE IF NOT EXISTS `car_db1`.`repair` (`ID` INT NOT NULL AUTO_INCREMENT, `Car_ID` INT NOT NULL, `Reason` VARCHAR(200) NOT NULL, `Price` DOUBLE NOT NULL, PRIMARY KEY (`ID`), INDEX `carid_idx` (`Car_ID` ASC), CONSTRAINT `carid1` "+
+                "`TotalHours` INT NOT NULL, `Price` INT NOT NULL, PRIMARY KEY (`ID`), INDEX `carid_idx` (`Car_ID` ASC), CONSTRAINT `cid` FOREIGN KEY (`Car_ID`) REFERENCES `car_db1`.`car` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION); " +
+                "CREATE TABLE IF NOT EXISTS `car_db1`.`repair` (`ID` INT NOT NULL AUTO_INCREMENT, `Car_ID` INT NOT NULL, `Reason` VARCHAR(200) NOT NULL, `Price` DOUBLE NOT NULL, PRIMARY KEY (`ID`), INDEX `carid_idx` (`Car_ID` ASC), CONSTRAINT `carid1` " +
                 "FOREIGN KEY (`Car_ID`) REFERENCES `car_db1`.`car` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION); CREATE TABLE IF NOT EXISTS `car_db1`.`repairarchive` (`ID` INT NOT NULL AUTO_INCREMENT, `Car_ID` INT NOT NULL, `Reason` VARCHAR(200) NOT NULL, " +
-                "`Loss` INT NOT NULL, PRIMARY KEY (`ID`), INDEX `carid2_idx` (`Car_ID` ASC), CONSTRAINT `carid2` FOREIGN KEY (`Car_ID`) REFERENCES `car_db1`.`car` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION); CREATE TABLE IF NOT EXISTS `car_db1`.`repair_report` ( "+
+                "`Loss` INT NOT NULL, PRIMARY KEY (`ID`), INDEX `carid2_idx` (`Car_ID` ASC), CONSTRAINT `carid2` FOREIGN KEY (`Car_ID`) REFERENCES `car_db1`.`car` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION); CREATE TABLE IF NOT EXISTS `car_db1`.`repair_report` ( " +
                 "`ID` INT NOT NULL AUTO_INCREMENT, `Car_ID` INT NOT NULL, `Count` INT NOT NULL DEFAULT 0, `Loss` INT NOT NULL, PRIMARY KEY (`ID`), UNIQUE INDEX `Car_ID_UNIQUE` (`Car_ID` ASC)); ";
             MySqlCommand cmd = new MySqlCommand(query, serverconn);
 
@@ -111,7 +111,9 @@ namespace Program
             {
                 switch (ex.Number)
                 {
-
+                    case 1042:
+                        MessageBox.Show("Немає доступу до серверу");
+                        break;
                 }
             }
             finally
@@ -134,8 +136,11 @@ namespace Program
             {
                 switch (ex.Number)
                 {
+                    case 1042:
+                        MessageBox.Show("Немає доступу до серверу");
+                        break;
                     case 1062:
-                        System.Windows.MessageBox.Show("Повтор");
+                        MessageBox.Show("Елемент з таким ім'ям вже існує в базі");
                         break;
                 }
             }
@@ -152,16 +157,31 @@ namespace Program
 
             String query = String.Format("SELECT * FROM {0}.{1}", DataBase, table);
             MySqlCommand cmd = new MySqlCommand(query, serverconn);
-            serverconn.Open();
-            MySqlDataReader reader = cmd.ExecuteReader();
-            while (reader.Read())
+            try
             {
-                cmp = new Catalog();
-                cmp.ID = int.Parse(reader["ID"].ToString());
-                cmp.Name = reader[table].ToString();
-                list.Add(cmp);
+                serverconn.Open();
+                MySqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    cmp = new Catalog();
+                    cmp.ID = int.Parse(reader["ID"].ToString());
+                    cmp.Name = reader[table].ToString();
+                    list.Add(cmp);
+                }
             }
-            serverconn.Close();
+            catch (MySqlException ex)
+            {
+                switch (ex.Number)
+                {
+                    case 1042:
+                        MessageBox.Show("Немає доступу до серверу");
+                        break;
+                }
+            }
+            finally
+            {
+                serverconn.Close();
+            }
             return list;
         }
 
@@ -174,7 +194,8 @@ namespace Program
             else if (table == "archive") query = ArchiveQuery;
             else if (table == "report") query = ReportQuery;
             else if (table == "repair") query = RepairQuery;
-            else if (table == "repairarchive") query = RepairedQuery;
+            else if (table == "repairarchive") query = RepairArchiveQuery;
+            else if (table == "repair_report") query = RepairReportQuery;
             else query = CatalogQuery + table;
             MySqlCommand cmd = new MySqlCommand(query, serverconn);
             MySqlDataAdapter adapter = new MySqlDataAdapter(query, serverconn);
@@ -182,18 +203,21 @@ namespace Program
             {
                 serverconn.Open();
                 adapter.Fill(dbtable);
-                return dbtable;
             }
-            catch (Exception)
+            catch (MySqlException ex)
             {
-
-                throw;
+                switch (ex.Number)
+                {
+                    case 1042:
+                        MessageBox.Show("Немає доступу до серверу");
+                        break;
+                }
             }
             finally
             {
                 serverconn.Close();
             }
-
+            return dbtable;
         }
 
         public DataTable ShowTable(string table, int status)
@@ -206,18 +230,21 @@ namespace Program
             {
                 serverconn.Open();
                 adapter.Fill(dbtable);
-                return dbtable;
             }
-            catch (Exception)
+            catch (MySqlException ex)
             {
-
-                throw;
+                switch (ex.Number)
+                {
+                    case 1042:
+                        MessageBox.Show("Немає доступу до серверу");
+                        break;
+                }
             }
             finally
             {
                 serverconn.Close();
             }
-
+            return dbtable;
         }
 
         public void Insert(Car newCar, string table)
@@ -233,8 +260,11 @@ namespace Program
             {
                 switch (ex.Number)
                 {
+                    case 1042:
+                        MessageBox.Show("Немає доступу до серверу");
+                        break;
                     case 1062:
-                        MessageBox.Show("Повтор");
+                        MessageBox.Show("Елемент з таким ім'ям вже існує в базі");
                         break;
                 }
             }
@@ -249,30 +279,48 @@ namespace Program
             DetCarInfo sc = new DetCarInfo();
             String query = String.Format("SELECT car.ID, Company, Model, Year, Category, Type, Fuel, Transmission, Drive, Engine, DischargeS, DischargeO, DischargeM, Power, MaxSpeed, Seats, Doors, Acceleration, Price, Pledge FROM {0}.car, {0}.company, {0}.drive, {0}.fuel, {0}.transmission, {0}.type, {0}.category WHERE car.Company_ID = company.ID AND car.Category_ID = category.ID AND car.Type_ID = type.ID AND car.Fuel_ID = fuel.ID AND car.Transmission_ID = transmission.ID AND car.Drive_ID = drive.ID AND car.ID = {1}", DataBase, ID);
             MySqlCommand cmd = new MySqlCommand(query, serverconn);
-            serverconn.Open();
-            MySqlDataReader reader = cmd.ExecuteReader();
-            reader.Read();
-            sc.Id = int.Parse(reader["ID"].ToString());
-            sc.Company = reader["Company"].ToString();
-            sc.Model = reader["Model"].ToString();
-            sc.Category = reader["Category"].ToString();
-            sc.Year = int.Parse(reader["Year"].ToString());
-            sc.Type = reader["Type"].ToString();
-            sc.Fuel = reader["Fuel"].ToString();
-            sc.Transmission = reader["Transmission"].ToString();
-            sc.Drive = reader["Drive"].ToString();
-            sc.Engine = int.Parse(reader["Engine"].ToString());
-            sc.DischargeS = double.Parse(reader["DischargeS"].ToString());
-            sc.DischargeO = double.Parse(reader["DischargeO"].ToString());
-            sc.DischargeM = double.Parse(reader["DischargeM"].ToString());
-            sc.Power = int.Parse(reader["Power"].ToString());
-            sc.Maxspeed = int.Parse(reader["MaxSpeed"].ToString());
-            sc.Seats = int.Parse(reader["Seats"].ToString());
-            sc.Doors = int.Parse(reader["Doors"].ToString());
-            sc.Acceleration = double.Parse(reader["Acceleration"].ToString());
-            sc.Price = int.Parse(reader["Price"].ToString());
-            sc.Pledge = int.Parse(reader["Pledge"].ToString());
-            serverconn.Close();
+            try
+            {
+                serverconn.Open();
+                MySqlDataReader reader = cmd.ExecuteReader();
+                reader.Read();
+                sc.Id = int.Parse(reader["ID"].ToString());
+                sc.Company = reader["Company"].ToString();
+                sc.Model = reader["Model"].ToString();
+                sc.Category = reader["Category"].ToString();
+                sc.Year = int.Parse(reader["Year"].ToString());
+                sc.Type = reader["Type"].ToString();
+                sc.Fuel = reader["Fuel"].ToString();
+                sc.Transmission = reader["Transmission"].ToString();
+                sc.Drive = reader["Drive"].ToString();
+                sc.Engine = int.Parse(reader["Engine"].ToString());
+                sc.DischargeS = double.Parse(reader["DischargeS"].ToString());
+                sc.DischargeO = double.Parse(reader["DischargeO"].ToString());
+                sc.DischargeM = double.Parse(reader["DischargeM"].ToString());
+                sc.Power = int.Parse(reader["Power"].ToString());
+                sc.Maxspeed = int.Parse(reader["MaxSpeed"].ToString());
+                sc.Seats = int.Parse(reader["Seats"].ToString());
+                sc.Doors = int.Parse(reader["Doors"].ToString());
+                sc.Acceleration = double.Parse(reader["Acceleration"].ToString());
+                sc.Price = int.Parse(reader["Price"].ToString());
+                sc.Pledge = int.Parse(reader["Pledge"].ToString());
+            }
+            catch (MySqlException ex)
+            {
+                switch (ex.Number)
+                {
+                    case 1042:
+                        {
+                            MessageBox.Show("Немає доступу до серверу");
+                            sc = null;
+                        }
+                        break;
+                }
+            }
+            finally
+            {
+                serverconn.Close();
+            }
             return sc;
         }
 
@@ -285,10 +333,14 @@ namespace Program
                 serverconn.Open();
                 cmd.ExecuteNonQuery();
             }
-            catch (Exception)
+            catch (MySqlException ex)
             {
-
-                throw;
+                switch (ex.Number)
+                {
+                    case 1042:
+                        MessageBox.Show("Немає доступу до серверу");
+                        break;
+                }
             }
             finally
             {
@@ -309,8 +361,11 @@ namespace Program
             {
                 switch (ex.Number)
                 {
+                    case 1042:
+                        MessageBox.Show("Немає доступу до серверу");
+                        break;
                     case 1451:
-                        System.Windows.MessageBox.Show("Видалення неможливе");
+                        MessageBox.Show("Видалення неможливе. Видалення призведене до порушення цілісності бази");
                         break;
                 }
             }
@@ -320,6 +375,58 @@ namespace Program
             }
         }
 
+        public void DeleteCar(int ID)
+        {
+            String firstQuery = String.Format("UPDATE {0}.car SET Availability = {0} WHERE ID = {2} ", DataBase, ID);
+            MySqlCommand cmd = new MySqlCommand(firstQuery, serverconn);
+            try
+            {
+                serverconn.Open();
+                cmd.ExecuteNonQuery();
+            }
+            catch (MySqlException ex)
+            {
+                switch (ex.Number)
+                {
+                    case 1042:
+                        MessageBox.Show("Немає доступу до серверу");
+                        break;
+                    case 1451:
+                        MessageBox.Show("Видалення неможливе. Видалення призведене до порушення цілісності бази");
+                        break;
+                }
+            }
+            finally
+            {
+                serverconn.Close();
+            }
+        }
+
+        /*public bool isRented(int ID)
+        {
+            bool result = true;
+            String query = String.Format("SELECT * FROM {0}.rented_car WHERE Car_ID = {1}", DataBase, ID);
+            MySqlCommand cmd = new MySqlCommand(query, serverconn);
+            try
+            {
+                serverconn.Open();
+                MySqlDataReader reader = cmd.ExecuteReader();
+                if (!reader.Read()) result = false;
+            }
+            catch (MySqlException ex)
+            {
+                switch (ex.Number)
+                {
+
+                }
+            }
+            finally
+            {
+                serverconn.Close();
+            }
+            return result;
+        }*/
+
         public void RentCar(RentedCar rc)
         {
             String firstQuery = String.Format("INSERT INTO {0}.rented_car (Car_ID, SName, FName, TName, Passport, ID_Number, License, FDay, LDay, TotalHours, Price) VALUES ({1},'{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}',{10}, {11}) ", DataBase, rc.Car_ID, rc.Sname, rc.Fname, rc.Tname, rc.Passport, rc.Id_number, rc.License, rc.FDate.ToString("yyyy-MM-dd H:mm:ss"), rc.LDate.ToString("yyyy-MM-dd H:mm:ss"), rc.Hours, rc.Price);
@@ -328,14 +435,16 @@ namespace Program
             {
                 serverconn.Open();
                 firstCmd.ExecuteNonQuery();
-                //secondCmd.ExecuteNonQuery();
             }
             catch (MySqlException ex)
             {
                 switch (ex.Number)
                 {
+                    case 1042:
+                        MessageBox.Show("Немає доступу до серверу");
+                        break;
                     case 1062:
-                        System.Windows.MessageBox.Show("Повтор");
+                        MessageBox.Show("Елемент з таким ім'ям вже існує в базі");
                         break;
                 }
             }
@@ -351,14 +460,32 @@ namespace Program
             Car car = new Car();
             String query = String.Format("SELECT car.ID, Company, Model, Price FROM {0}.car, {0}.company WHERE car.company_ID = company.ID AND car.ID = {1}", DataBase, ID);
             MySqlCommand cmd = new MySqlCommand(query, serverconn);
-            serverconn.Open();
-            MySqlDataReader reader = cmd.ExecuteReader();
-            reader.Read();
-            car.Id = int.Parse(reader["ID"].ToString());
-            car.Company = reader["Company"].ToString();
-            car.Model = reader["Model"].ToString();
-            car.Price = int.Parse(reader["Price"].ToString());
-            serverconn.Close();
+            try
+            {
+                serverconn.Open();
+                MySqlDataReader reader = cmd.ExecuteReader();
+                reader.Read();
+                car.Id = int.Parse(reader["ID"].ToString());
+                car.Company = reader["Company"].ToString();
+                car.Model = reader["Model"].ToString();
+                car.Price = int.Parse(reader["Price"].ToString());
+            }
+            catch (MySqlException ex)
+            {
+                switch (ex.Number)
+                {
+                    case 1042:
+                        {
+                            MessageBox.Show("Немає доступу до серверу");
+                            car = null;
+                        }
+                        break;
+                }
+            }
+            finally
+            {
+                serverconn.Close();
+            }
             return car;
         }
 
@@ -372,30 +499,45 @@ namespace Program
             RentedCar rc = new RentedCar();
             String query = String.Format("SELECT * FROM {0}.rented_car", DataBase);
             MySqlCommand cmd = new MySqlCommand(query, serverconn);
-            serverconn.Open();
-            MySqlDataReader reader = cmd.ExecuteReader();
-            while (reader.Read())
+            try
             {
-                rc.ID = int.Parse(reader["ID"].ToString());
-                rc.Fname = reader["FName"].ToString();
-                rc.Sname = reader["SName"].ToString();
-                rc.Tname = reader["TName"].ToString();
-                rc.FDate = Convert.ToDateTime(reader["FDay"].ToString());
-                rc.LDate = Convert.ToDateTime(reader["Lday"].ToString());
-                if (rc.LDate <= dt)
+                serverconn.Open();
+                MySqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
                 {
-                    text = String.Format("Прокат закінчився ({0} {1} {2})", rc.Sname, rc.Fname, rc.Tname);
-                    finishedList.Add(rc);
+                    rc.ID = int.Parse(reader["ID"].ToString());
+                    rc.Fname = reader["FName"].ToString();
+                    rc.Sname = reader["SName"].ToString();
+                    rc.Tname = reader["TName"].ToString();
+                    rc.FDate = Convert.ToDateTime(reader["FDay"].ToString());
+                    rc.LDate = Convert.ToDateTime(reader["Lday"].ToString());
+                    if (rc.LDate <= dt)
+                    {
+                        text = String.Format("Прокат закінчився ({0} {1} {2})", rc.Sname, rc.Fname, rc.Tname);
+                        finishedList.Add(rc);
+                    }
+                    else if (rc.FDate <= dt)
+                    {
+                        text = String.Format("Прокат почався ({0} {1} {2})", rc.Sname, rc.Fname, rc.Tname);
+                        activeList.Add(rc);
+                    }
+                    nicon.ShowBalloonTip(5000, title, text, System.Windows.Forms.ToolTipIcon.Info);
+
                 }
-                else if (rc.FDate <= dt)
-                {
-                    text = String.Format("Прокат почався ({0} {1} {2})", rc.Sname, rc.Fname, rc.Tname);
-                    activeList.Add(rc);
-                }
-                nicon.ShowBalloonTip(5000, title, text, System.Windows.Forms.ToolTipIcon.Info);
-                
             }
-            serverconn.Close();
+            catch (MySqlException ex)
+            {
+                switch (ex.Number)
+                {
+                    case 1042:
+                        MessageBox.Show("Немає доступу до серверу");
+                        break;
+                }
+            }
+            finally
+            {
+                serverconn.Close();
+            }
             ChangeStatus(activeList, 1);
             ChangeStatus(finishedList, 2);
         }
@@ -411,22 +553,25 @@ namespace Program
             int finishedCount = 0;
             String query = String.Format("SELECT * FROM {0}.rented_car", DataBase);
             MySqlCommand cmd = new MySqlCommand(query, serverconn);
-            serverconn.Open();
-            MySqlDataReader reader = cmd.ExecuteReader();
-            while (reader.Read())
+            try
             {
-                rc.ID = int.Parse(reader["ID"].ToString());
-                rc.FDate = Convert.ToDateTime(reader["FDay"].ToString());
-                rc.LDate = Convert.ToDateTime(reader["Lday"].ToString());
-                if (rc.LDate <= dt)
+                serverconn.Open();
+                MySqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
                 {
-                    finishedCount++;
-                    finishedList.Add(rc);
-                }
-                else if (rc.FDate <= dt)
-                {
-                    activeCount++;
-                    activeList.Add(rc);
+                    rc.ID = int.Parse(reader["ID"].ToString());
+                    rc.FDate = Convert.ToDateTime(reader["FDay"].ToString());
+                    rc.LDate = Convert.ToDateTime(reader["Lday"].ToString());
+                    if (rc.LDate <= dt)
+                    {
+                        finishedCount++;
+                        finishedList.Add(rc);
+                    }
+                    else if (rc.FDate <= dt)
+                    {
+                        activeCount++;
+                        activeList.Add(rc);
+                    }
                 }
                 if (activeCount > 0)
                 {
@@ -439,7 +584,19 @@ namespace Program
                     nicon.ShowBalloonTip(5000, title, text, System.Windows.Forms.ToolTipIcon.Info);
                 }
             }
-            serverconn.Close();
+            catch (MySqlException ex)
+            {
+                switch (ex.Number)
+                {
+                    case 1042:
+                        MessageBox.Show("Немає доступу до серверу");
+                        break;
+                }
+            }
+            finally
+            {
+                serverconn.Close();
+            }
             ChangeStatus(activeList, 1);
             ChangeStatus(finishedList, 2);
         }
@@ -455,10 +612,14 @@ namespace Program
                     serverconn.Open();
                     cmd.ExecuteNonQuery();
                 }
-                catch (Exception)
+                catch (MySqlException ex)
                 {
-
-                    throw;
+                    switch (ex.Number)
+                    {
+                        case 1042:
+                            MessageBox.Show("Немає доступу до серверу");
+                            break;
+                    }
                 }
                 finally
                 {
@@ -493,13 +654,16 @@ namespace Program
             }
             catch (MySqlException ex)
             {
-
-                throw;
+                switch (ex.Number)
+                {
+                    case 1042: MessageBox.Show("Немає доступу до бази даних");
+                        break;
+                }
+                return false;
             }
             finally
             {
                 serverconn.Close();
-
             }
         }
 
@@ -520,7 +684,7 @@ namespace Program
                 switch (ex.Number)
                 {
                     case 1062:
-                        MessageBox.Show("Повтор");
+                        MessageBox.Show("Елемент з таким ім'ям вже існує в базі");
                         break;
                 }
             }
@@ -535,19 +699,37 @@ namespace Program
             RentedCar rc = new RentedCar();
             String query = String.Format("SELECT Car_ID, SName, FName, TName, FDay, LDay, TotalHours, Price FROM {0}.rented_car WHERE ID = {1}", DataBase, ID);
             MySqlCommand cmd = new MySqlCommand(query, serverconn);
-            serverconn.Open();
-            MySqlDataReader reader = cmd.ExecuteReader();
-            reader.Read();
-            rc.ID = ID;
-            rc.Car_ID = int.Parse(reader["Car_ID"].ToString());
-            rc.Sname = reader["SName"].ToString();
-            rc.Fname = reader["FName"].ToString();
-            rc.Tname = reader["TName"].ToString();
-            rc.FDate = Convert.ToDateTime(reader["FDay"].ToString());
-            rc.LDate = Convert.ToDateTime(reader["Lday"].ToString());
-            rc.Hours = int.Parse(reader["TotalHours"].ToString());
-            rc.Price = int.Parse(reader["Price"].ToString());
-            serverconn.Close();
+            try
+            {
+                serverconn.Open();
+                MySqlDataReader reader = cmd.ExecuteReader();
+                reader.Read();
+                rc.ID = ID;
+                rc.Car_ID = int.Parse(reader["Car_ID"].ToString());
+                rc.Sname = reader["SName"].ToString();
+                rc.Fname = reader["FName"].ToString();
+                rc.Tname = reader["TName"].ToString();
+                rc.FDate = Convert.ToDateTime(reader["FDay"].ToString());
+                rc.LDate = Convert.ToDateTime(reader["Lday"].ToString());
+                rc.Hours = int.Parse(reader["TotalHours"].ToString());
+                rc.Price = int.Parse(reader["Price"].ToString());
+            }
+            catch (MySqlException ex)
+            {
+                switch (ex.Number)
+                {
+                    case 1042:
+                        {
+                            MessageBox.Show("Немає доступу до бази даних");
+                            rc = null;
+                        }
+                        break;
+                }
+            }
+            finally
+            {
+                serverconn.Close();
+            }
             return rc;
         }
 
@@ -565,7 +747,7 @@ namespace Program
                 switch (ex.Number)
                 {
                     case 1062:
-                        MessageBox.Show("Повтор");
+                        MessageBox.Show("Елемент з таким ім'ям вже існує в базі");
                         break;
                 }
             }
@@ -595,7 +777,7 @@ namespace Program
                 switch (ex.Number)
                 {
                     case 1062:
-                        MessageBox.Show("Повтор");
+                        MessageBox.Show("Елемент з таким ім'ям вже існує в базі");
                         break;
                 }
             }

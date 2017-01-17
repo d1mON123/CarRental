@@ -1,16 +1,16 @@
-﻿<Window x:Class="Program.Windows.RentedCarWindow"
+﻿<Window x:Class="Program.RentedCarWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Program.Windows"
+        xmlns:local="clr-namespace:Program"
         mc:Ignorable="d"
         Title="Орендовані машини" Height="350" Width="837" Loaded="Window_Loaded" WindowState="Maximized" WindowStartupLocation="CenterScreen">
     <Grid>
         <DockPanel LastChildFill="True">
             <ToolBar DockPanel.Dock="Top" Background="White">
-                <Button x:Name="deleteButton" Height="25" Width="25" Click="Delete_click" >1</Button>
-                <Button x:Name="reportButton" Height="25" Width="25" Click="Report_click" >2</Button>
+                <Button x:Name="deleteButton" Height="25" Width="70" Click="Delete_click" >Видалити</Button>
+                <Button x:Name="reportButton" Height="25" Width="35" Click="Report_click" >Звіт</Button>
             </ToolBar>
             <DataGrid x:Name="dataGrid" IsReadOnly="True" FontSize="14"></DataGrid>
         </DockPanel>

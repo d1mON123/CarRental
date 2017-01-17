@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Program"
         mc:Ignorable="d"
-        Title="Вхід" Height="250" Width="300" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize">
+        Title="Вхід" Height="250" Width="300" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" Icon="/CarRental;component/Resources/Graphicloads-Colorful-Long-Shadow-Car.ico">
     <Grid>
         <Label x:Name="Serverlabel" Content="Сервер: " HorizontalAlignment="Left" Margin="30,30,0,0" VerticalAlignment="Top" FontSize="14"/>
         <Label x:Name="Userlabel" Content="Логін: " HorizontalAlignment="Left" Margin="30,77,0,0" VerticalAlignment="Top" FontSize="14"/>

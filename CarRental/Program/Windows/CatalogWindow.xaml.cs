@@ -1,7 +1,7 @@
 ﻿using System.Data;
 using System.Windows;
 
-namespace Program.Windows
+namespace Program
 {
     public partial class CatalogWindow : Window
     {

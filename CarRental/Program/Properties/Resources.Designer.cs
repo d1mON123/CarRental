@@ -63,9 +63,9 @@ namespace Program.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Icon, аналогичного (Значок).
         /// </summary>
-        internal static System.Drawing.Icon icon {
+        internal static System.Drawing.Icon car {
             get {
-                object obj = ResourceManager.GetObject("icon", resourceCulture);
+                object obj = ResourceManager.GetObject("car", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
             }
         }

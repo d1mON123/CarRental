@@ -1,7 +1,7 @@
 ﻿using System.Data;
 using System.Windows;
 
-namespace Program.Windows
+namespace Program
 {
     public partial class RentedCarWindow : Window
     {
@@ -100,10 +100,13 @@ namespace Program.Windows
             {
                 int value = int.Parse(row.Row.ItemArray[0].ToString());
                 RentedCar rc = s.GetRentedCarInfo(value);
-                rw = new ReportWindow(s, rc);
-                if (rw.ShowDialog() == true)
+                if (rc != null)
                 {
-                    UpdateTable();
+                    rw = new ReportWindow(s, rc);
+                    if (rw.ShowDialog() == true)
+                    {
+                        UpdateTable();
+                    }
                 }
             }
         }

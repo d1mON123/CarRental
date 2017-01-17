@@ -29,17 +29,8 @@ namespace Program
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            if (Status == 0)
+            if (Status != 2)
             {
-                //reportButton.Visibility = Visibility.Collapsed;
-            }
-            else if (Status == 2)
-            {
-                deleteButton.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                deleteButton.Visibility = Visibility.Collapsed;
                 reportButton.Visibility = Visibility.Collapsed;
             }
             UpdateTable();
@@ -71,9 +62,8 @@ namespace Program
                 dataGrid.Columns[0].Visibility = Visibility.Collapsed;
                 dataGrid.Columns[1].Header = "Марка";
                 dataGrid.Columns[2].Header = "Модель";
-                dataGrid.Columns[3].Header = "Пробіг";
-                dataGrid.Columns[4].Header = "К-ть годин";
-                dataGrid.Columns[5].Header = "Прибуток";
+                dataGrid.Columns[3].Header = "К-ть";
+                dataGrid.Columns[4].Header = "Затрати";
             }
         }
 

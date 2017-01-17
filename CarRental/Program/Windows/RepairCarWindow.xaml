@@ -3,14 +3,13 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Program.Windows"
+        xmlns:local="clr-namespace:Program"
         mc:Ignorable="d"
-        Title="RepairCarWindow" Height="371.053" Width="651.88" Loaded="Window_Loaded">
+        Title="RepairCarWindow" Height="371.053" Width="651.88" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen" Icon="/CarRental;component/Resources/Graphicloads-Colorful-Long-Shadow-Car.ico">
     <Grid>
         <DockPanel LastChildFill="True">
             <ToolBar DockPanel.Dock="Top" Background="White">
-                <Button x:Name="deleteButton" Height="25" Width="25">1</Button>
-                <Button x:Name="reportButton" Width="25" Click="Report_Click" VerticalAlignment="Stretch">2</Button>
+                <Button x:Name="reportButton" Width="35" Click="Report_Click" VerticalAlignment="Stretch">Звіт</Button>
             </ToolBar>
             <DataGrid x:Name="dataGrid" IsReadOnly="True" FontSize="14"></DataGrid>
         </DockPanel>

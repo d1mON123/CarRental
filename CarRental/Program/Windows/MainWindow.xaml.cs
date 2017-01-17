@@ -1,18 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 
 namespace Program
@@ -20,10 +9,10 @@ namespace Program
     public partial class MainWindow : Window
     {
         Session s;
-        Windows.EditWindow edw;
-        Windows.CatalogWindow ctw;
-        Windows.RentWindow rcw;
-        Windows.RentedCarWindow rdcw;
+        EditWindow edw;
+        CatalogWindow ctw;
+        RentWindow rcw;
+        RentedCarWindow rdcw;
         RepairCarWindow rpc;
         public MainWindow(Session s)
         {
@@ -69,7 +58,7 @@ namespace Program
 
         private void Add_Click(object sender, RoutedEventArgs e)
         {
-            edw = new Windows.EditWindow(s);
+            edw = new EditWindow(s);
             if (edw.ShowDialog() == true) UpdateTable();
         }
 
@@ -80,10 +69,13 @@ namespace Program
             {
                 int value = int.Parse(row.Row.ItemArray[0].ToString());
                 DetCarInfo sc = s.GetSavedCar(value);
-                edw = new Windows.EditWindow(s, sc);
-                if (edw.ShowDialog() == true)
+                if (sc != null)
                 {
-                    UpdateTable();
+                    edw = new EditWindow(s, sc);
+                    if (edw.ShowDialog() == true)
+                    {
+                        UpdateTable();
+                    }
                 }
             }
         }
@@ -96,8 +88,8 @@ namespace Program
                 int value = int.Parse(row.Row.ItemArray[0].ToString());
                 if (MessageBox.Show("Ви дійсно бажаєте видалити автомобіль?", "Видалення", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                 {
-                    s.Delete("car", value);
-                    UpdateTable();
+                        s.DeleteCar(value);
+                        UpdateTable();
                 }
             }
         }
@@ -109,9 +101,12 @@ namespace Program
             {
                 int value = int.Parse(row.Row.ItemArray[0].ToString());
                 Car c = s.GetCarInfo(value);
-                rcw = new Windows.RentWindow(s, c);
-                rcw.ShowDialog();
-                UpdateTable();
+                if (c != null)
+                {
+                    rcw = new RentWindow(s, c);
+                    rcw.ShowDialog();
+                    UpdateTable();
+                }
             }
         }
 
@@ -128,73 +123,73 @@ namespace Program
 
         private void Company_Click(object sender, RoutedEventArgs e)
         {
-            ctw = new Windows.CatalogWindow(s, "Марка", "company");
+            ctw = new CatalogWindow(s, "Марка", "company");
             ctw.ShowDialog();
         }
 
         private void Type_Click(object sender, RoutedEventArgs e)
         {
-            ctw = new Windows.CatalogWindow(s, "Тип кузова", "type");
+            ctw = new CatalogWindow(s, "Тип кузова", "type");
             ctw.ShowDialog();
         }
 
         private void Transmission_Click(object sender, RoutedEventArgs e)
         {
-            ctw = new Windows.CatalogWindow(s, "Коробка передач", "transmission");
+            ctw = new CatalogWindow(s, "Коробка передач", "transmission");
             ctw.ShowDialog();
         }
 
         private void Drive_Click(object sender, RoutedEventArgs e)
         {
-            ctw = new Windows.CatalogWindow(s, "Привід", "drive");
+            ctw = new CatalogWindow(s, "Привід", "drive");
             ctw.ShowDialog();
         }
 
         private void Category_Click(object sender, RoutedEventArgs e)
         {
-            ctw = new Windows.CatalogWindow(s, "Клас", "category");
+            ctw = new CatalogWindow(s, "Клас", "category");
             ctw.ShowDialog();
         }
 
         private void Fuel_Click(object sender, RoutedEventArgs e)
         {
-            ctw = new Windows.CatalogWindow(s, "Тип палива", "fuel");
+            ctw = new CatalogWindow(s, "Тип палива", "fuel");
             ctw.ShowDialog();
         }
 
         private void RentedCar_Click(object sender, RoutedEventArgs e)
         {
-            rdcw = new Windows.RentedCarWindow(s, 0);
+            rdcw = new RentedCarWindow(s, 0);
             rdcw.ShowDialog();
         }
 
         private void ActiveRented_Click(object sender, RoutedEventArgs e)
         {
-            rdcw = new Windows.RentedCarWindow(s, 1);
+            rdcw = new RentedCarWindow(s, 1);
             rdcw.ShowDialog();
         }
 
         private void FinishedRented_Click(object sender, RoutedEventArgs e)
         {
-            rdcw = new Windows.RentedCarWindow(s, 2);
+            rdcw = new RentedCarWindow(s, 2);
             rdcw.ShowDialog();
         }
 
         private void Archive_Click(object sender, RoutedEventArgs e)
         {
-            rdcw = new Windows.RentedCarWindow(s, 3);
+            rdcw = new RentedCarWindow(s, 3);
             rdcw.ShowDialog();
         }
 
         private void Report_Click(object sender, RoutedEventArgs e)
         {
-            rdcw = new Windows.RentedCarWindow(s, 4);
+            rdcw = new RentedCarWindow(s, 4);
             rdcw.ShowDialog();
         }
 
         private void Settings_Click(object sender, RoutedEventArgs e)
         {
-            new Windows.SettingsWindow().ShowDialog();
+            new SettingsWindow().ShowDialog();
             UpdateTable();
         }
 
@@ -209,6 +204,20 @@ namespace Program
         private void Repair_Click(object sender, RoutedEventArgs e)
         {
             rpc = new RepairCarWindow(s, 0);
+            rpc.ShowDialog();
+
+        }
+
+        private void RepairArchive_Click(object sender, RoutedEventArgs e)
+        {
+            rpc = new RepairCarWindow(s, 1);
+            rpc.ShowDialog();
+
+        }
+
+        private void RepairReport_Click(object sender, RoutedEventArgs e)
+        {
+            rpc = new RepairCarWindow(s, 2);
             rpc.ShowDialog();
 
         }
