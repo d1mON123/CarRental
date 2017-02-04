@@ -55,43 +55,55 @@ namespace Program
 
         private void Accept_Click(object sender, RoutedEventArgs e)
         {
-            Car newCar = new Car();
-            Catalog c = new Catalog();
-            c = companyBox.SelectedItem as Catalog;
-            newCar.Company_id = c.ID;
-            newCar.Model = modelBox.Text;
-            c = categoryBox.SelectedItem as Catalog;
-            newCar.Year = int.Parse(yearBox.Text);
-            newCar.Category_id = c.ID;
-            c = typeBox.SelectedItem as Catalog;
-            newCar.Type_id = c.ID;
-            c = fuelBox.SelectedItem as Catalog;
-            newCar.Fuel_id = c.ID;
-            c = transmissionBox.SelectedItem as Catalog;
-            newCar.Transmission_id = c.ID;
-            c = driveBox.SelectedItem as Catalog;
-            newCar.Drive_id = c.ID;
-            newCar.Engine = int.Parse(engineBox.Text);
-            newCar.DischargeS = double.Parse(dischargesBox.Text);
-            newCar.DischargeO = double.Parse(dischargeoBox.Text);
-            newCar.DischargeM = double.Parse(dischargemBox.Text);
-            newCar.Power = int.Parse(powerBox.Text);
-            newCar.Maxspeed = int.Parse(speedBox.Text);
-            newCar.Seats = int.Parse(seatsBox.Text);
-            newCar.Doors = int.Parse(doorsBox.Text);
-            newCar.Acceleration = double.Parse(accelerationBox.Text);
-            newCar.Price = int.Parse(priceBox.Text);
-            newCar.Pledge = int.Parse(pledgeBox.Text);
-            if (cinfo == null)
+            if (companyBox.SelectedIndex != -1 && modelBox.Text != "" && categoryBox.SelectedIndex != -1 &&
+                yearBox.Text != "" && typeBox.SelectedIndex != -1 && fuelBox.SelectedIndex != -1 &&
+                transmissionBox.SelectedIndex != -1 && driveBox.SelectedIndex != -1 && engineBox.Text != "" &&
+                dischargesBox.Text != "" && dischargeoBox.Text != "" && dischargemBox.Text != "" &&
+                powerBox.Text != "" && speedBox.Text != "" && seatsBox.Text != "" && doorsBox.Text != "" &&
+                accelerationBox.Text != "" && priceBox.Text != "" && pledgeBox.Text != "")
             {
-                s.Insert(newCar, "car");
+                Car newCar = new Car();
+                Catalog c = new Catalog();
+                c = companyBox.SelectedItem as Catalog;
+                newCar.Company_id = c.ID;
+                newCar.Model = modelBox.Text;
+                c = categoryBox.SelectedItem as Catalog;
+                newCar.Year = int.Parse(yearBox.Text);
+                newCar.Category_id = c.ID;
+                c = typeBox.SelectedItem as Catalog;
+                newCar.Type_id = c.ID;
+                c = fuelBox.SelectedItem as Catalog;
+                newCar.Fuel_id = c.ID;
+                c = transmissionBox.SelectedItem as Catalog;
+                newCar.Transmission_id = c.ID;
+                c = driveBox.SelectedItem as Catalog;
+                newCar.Drive_id = c.ID;
+                newCar.Engine = int.Parse(engineBox.Text);
+                newCar.DischargeS = double.Parse(dischargesBox.Text);
+                newCar.DischargeO = double.Parse(dischargeoBox.Text);
+                newCar.DischargeM = double.Parse(dischargemBox.Text);
+                newCar.Power = int.Parse(powerBox.Text);
+                newCar.Maxspeed = int.Parse(speedBox.Text);
+                newCar.Seats = int.Parse(seatsBox.Text);
+                newCar.Doors = int.Parse(doorsBox.Text);
+                newCar.Acceleration = double.Parse(accelerationBox.Text);
+                newCar.Price = int.Parse(priceBox.Text);
+                newCar.Pledge = int.Parse(pledgeBox.Text);
+                if (cinfo == null)
+                {
+                    s.Insert(newCar, "car");
+                }
+                else
+                {
+                    s.Update(newCar, cinfo.Id);
+                }
+                DialogResult = true;
             }
             else
             {
-                s.Update(newCar, cinfo.Id);
+                MessageBox.Show("Одне або декілька полів вводу пусті");
             }
-
-            DialogResult = true;
+            
         }
 
         private void Cancel_Click(object sender, RoutedEventArgs e)

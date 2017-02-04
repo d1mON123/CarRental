@@ -10,7 +10,7 @@
         <DockPanel LastChildFill="True">
             <Menu DockPanel.Dock="Top" Background="White" FontSize="14">
                 <MenuItem Header="_Меню">
-                    <MenuItem Header="_Вихід"/>
+                    <MenuItem Header="_Вихід" Click="MenuItem_Click"/>
                 </MenuItem>
                 <MenuItem Header="_Редагування">
                     <MenuItem Header="_Додати" Click="Add_Click"/>

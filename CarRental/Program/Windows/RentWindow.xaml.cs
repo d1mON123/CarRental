@@ -51,31 +51,41 @@ namespace Program
 
         private void RentButton_Click(object sender, RoutedEventArgs e)
         {
-            TimeSpan span = TimeSpan.Zero;
-            DateTime dt = new DateTime(TimeF.SelectedDate.Value.Year, TimeF.SelectedDate.Value.Month, TimeF.SelectedDate.Value.Day, (TimeFBox.SelectedIndex + 8), 0, 0);
-            DateTime dt1 = new DateTime(TimeL.SelectedDate.Value.Year, TimeL.SelectedDate.Value.Month, TimeL.SelectedDate.Value.Day, (TimeLBox.SelectedIndex + 8), 0, 0);
-            if (dt >= dt1) MessageBox.Show("Неправильно введений час");
+            if (SNameBox.Text != "" && FNameBox.Text != "" && TNameBox.Text != "" && PassportBox.Text != "" && IDBox.Text != "" &&
+                LicenseBox.Text != "" && PriceBox.Text != "" && TimeFBox.SelectedIndex != -1 && TimeLBox.SelectedIndex != -1 &&
+                TimeF.SelectedDate != null && TimeL.SelectedDate != null)
+            {
+                TimeSpan span = TimeSpan.Zero;
+                DateTime dt = new DateTime(TimeF.SelectedDate.Value.Year, TimeF.SelectedDate.Value.Month, TimeF.SelectedDate.Value.Day, (TimeFBox.SelectedIndex + 8), 0, 0);
+                DateTime dt1 = new DateTime(TimeL.SelectedDate.Value.Year, TimeL.SelectedDate.Value.Month, TimeL.SelectedDate.Value.Day, (TimeLBox.SelectedIndex + 8), 0, 0);
+                if (dt >= dt1) MessageBox.Show("Неправильно введений час");
+                else
+                {
+                    span = dt1.Subtract(dt);
+                }
+                RentedCar rc = new RentedCar();
+                rc.Car_ID = c.Id;
+                rc.Sname = SNameBox.Text;
+                rc.Fname = FNameBox.Text;
+                rc.Tname = TNameBox.Text;
+                rc.Passport = PassportBox.Text;
+                rc.Id_number = IDBox.Text;
+                rc.License = LicenseBox.Text;
+                rc.FDate = dt;
+                rc.LDate = dt1;
+                rc.Hours = int.Parse(span.TotalHours.ToString());
+                rc.Price = int.Parse(PriceBox.Text);
+                if (!s.CheckTime(rc))
+                {
+                    s.RentCar(rc);
+                    DialogResult = true;
+                }
+            }
             else
             {
-                span = dt1.Subtract(dt);
+                MessageBox.Show("Одне або декілька полів вводу пусті");
             }
-            RentedCar rc = new RentedCar();
-            rc.Car_ID = c.Id;
-            rc.Sname = SNameBox.Text;
-            rc.Fname = FNameBox.Text;
-            rc.Tname = TNameBox.Text;
-            rc.Passport = PassportBox.Text;
-            rc.Id_number = IDBox.Text;
-            rc.License = LicenseBox.Text;
-            rc.FDate = dt;
-            rc.LDate = dt1;
-            rc.Hours = int.Parse(span.TotalHours.ToString());
-            rc.Price = int.Parse(PriceBox.Text);
-            if (!s.CheckTime(rc))
-            {
-                s.RentCar(rc);
-                DialogResult = true;
-            }
+            
         }
 
         private void PriceButton_Click(object sender, RoutedEventArgs e)

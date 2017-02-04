@@ -117,7 +117,10 @@ namespace Program
             {
                 int value = int.Parse(row.Row.ItemArray[0].ToString());
                 DetCarInfo sc = s.GetSavedCar(value);
-                new DetailedInfoWindow(s, sc).ShowDialog();
+                if (sc != null)
+                {
+                    new DetailedInfoWindow(s, sc).ShowDialog();
+                }
             }
         }
 
@@ -219,6 +222,11 @@ namespace Program
         {
             rpc = new RepairCarWindow(s, 2);
             rpc.ShowDialog();
+
+        }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
 
         }
     }

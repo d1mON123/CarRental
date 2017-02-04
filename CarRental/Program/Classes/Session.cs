@@ -92,7 +92,7 @@ namespace Program
                 "CONSTRAINT `drive` FOREIGN KEY (`Drive_ID`) REFERENCES `car_db1`.`drive` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION); CREATE TABLE IF NOT EXISTS `car_db1`.`rented_car` (`ID` INT NOT NULL AUTO_INCREMENT, `Car_ID` INT NOT NULL, " +
                 "`SName` VARCHAR(45) NOT NULL, `FName` VARCHAR(45) NOT NULL, `TName` VARCHAR(45) NOT NULL, `Passport` VARCHAR(45) NOT NULL, `ID_Number` VARCHAR(45) NOT NULL, `License` VARCHAR(45) NOT NULL, " +
                 "`FDay` DATETIME NOT NULL, `LDay` DATETIME NOT NULL, `TotalHours` INT NOT NULL, `Price` INT NOT NULL, `Status` TINYINT NOT NULL DEFAULT 0, PRIMARY KEY (`ID`), INDEX `car_idx` (`Car_ID` ASC), CONSTRAINT `car` FOREIGN KEY (`Car_ID`) " +
-                "REFERENCES `car_db1`.`car` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION); CREATE TABLE IF NOT EXISTS `car_db1`.`report` (`ID` INT NOT NULL AUTO_INCREMENT, `Car_ID` INT NOT NULL, `Mileage` DOUBLE NOT NULL, " +
+                "REFERENCES `car_db1`.`car` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION); CREATE TABLE IF NOT EXISTS `car_db1`.`report` (`ID` INT NOT NULL AUTO_INCREMENT, `Car_ID` INT NOT NULL, UNIQUE INDEX `Car_ID_UNIQUE` (`Car_ID` ASC), `Mileage` DOUBLE NOT NULL, " +
                 "`TotalHours` INT NOT NULL, `Income` INT NOT NULL, PRIMARY KEY (`ID`), INDEX `carid_idx` (`Car_ID` ASC), CONSTRAINT `carid` FOREIGN KEY (`Car_ID`) REFERENCES `car_db1`.`car` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION); " +
                 "CREATE TABLE IF NOT EXISTS `car_db1`.`archive` (`ID` INT NOT NULL AUTO_INCREMENT, `Car_ID` INT NOT NULL, `SName` VARCHAR(45) NOT NULL, `FName` VARCHAR(45) NOT NULL, `TName` VARCHAR(45) NOT NULL, `FDay` DATETIME NOT NULL, `LDay` DATETIME NOT NULL, " +
                 "`TotalHours` INT NOT NULL, `Price` INT NOT NULL, PRIMARY KEY (`ID`), INDEX `carid_idx` (`Car_ID` ASC), CONSTRAINT `cid` FOREIGN KEY (`Car_ID`) REFERENCES `car_db1`.`car` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION); " +
@@ -401,31 +401,6 @@ namespace Program
                 serverconn.Close();
             }
         }
-
-        /*public bool isRented(int ID)
-        {
-            bool result = true;
-            String query = String.Format("SELECT * FROM {0}.rented_car WHERE Car_ID = {1}", DataBase, ID);
-            MySqlCommand cmd = new MySqlCommand(query, serverconn);
-            try
-            {
-                serverconn.Open();
-                MySqlDataReader reader = cmd.ExecuteReader();
-                if (!reader.Read()) result = false;
-            }
-            catch (MySqlException ex)
-            {
-                switch (ex.Number)
-                {
-
-                }
-            }
-            finally
-            {
-                serverconn.Close();
-            }
-            return result;
-        }*/
 
         public void RentCar(RentedCar rc)
         {

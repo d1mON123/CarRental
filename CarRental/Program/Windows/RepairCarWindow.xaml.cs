@@ -24,7 +24,6 @@ namespace Program
             InitializeComponent();
             this.s = s;
             this.Status = Status;
-
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
